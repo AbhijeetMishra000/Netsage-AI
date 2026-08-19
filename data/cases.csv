@@ -1,0 +1,31 @@
+case_id,symptom,topology_note,show_output,expected_fault,osi_layer,concept,severity
+C001,PCs in same LAN cannot communicate,SW1 Fa0/1 should be VLAN 10; Fa0/2 should be VLAN 10,show vlan brief: Fa0/1 VLAN 10; Fa0/2 VLAN 20,Wrong VLAN assignment,Layer 2,VLAN,Medium
+C002,PC cannot reach any device,PC connected to SW1 Fa0/1,show interfaces fa0/1: line protocol is down,Access interface is down,Layer 1/2,Interface,High
+C003,VLAN 20 cannot reach another VLAN,R1 provides inter-VLAN routing,show interfaces trunk: VLAN 20 not allowed,VLAN 20 missing from trunk allowed list,Layer 2,VLAN,High
+C004,VLAN traffic fails across two switches,SW1 and SW2 use a trunk,show interfaces trunk: native VLAN mismatch,Native VLAN mismatch,Layer 2,Trunk,Medium
+C005,New VLAN hosts cannot communicate,VLAN 40 required on SW1,show vlan brief: VLAN 40 absent,Required VLAN missing,Layer 2,VLAN,Medium
+C006,PC has IP but cannot reach gateway,PC should use 192.168.10.0/24,PC 192.168.10.20/24; gateway 192.168.20.1,Gateway is outside host subnet,Layer 3,Default Gateway,High
+C007,Local communication fails,Network should use /24,PC 192.168.1.10/16; peer 192.168.2.10/24,Incorrect subnet mask,Layer 3,Subnet Mask,Medium
+C008,Connectivity is intermittent,Hosts should have unique IPs,show arp: 192.168.10.20 maps to two MAC addresses,Duplicate IP address,Layer 2/3,IP Addressing,High
+C009,PC cannot obtain DHCP address,DHCP server is on another subnet,show running-config: no ip helper-address,DHCP relay missing,Layer 3,DHCP,High
+C010,PC receives wrong DHCP network,VLAN 20 should use 192.168.20.0/24,show ip dhcp pool: network 192.168.10.0 255.255.255.0,Wrong DHCP pool network,Layer 3,DHCP,High
+C011,DHCP clients cannot get addresses,Pool should serve 192.168.30.0/24,show ip dhcp pool: total addresses 0,DHCP pool has no usable addresses,Layer 3,DHCP,Medium
+C012,All DHCP clients fail,Static exclusions should cover only reserved addresses,show running-config: ip dhcp excluded-address 192.168.40.1 192.168.40.254,Entire DHCP subnet excluded,Layer 3,DHCP,High
+C013,PC reaches gateway but not remote server,Server network is 10.20.0.0/24,show ip route: no route to 10.20.0.0/24,Missing route,Layer 3,Routing,High
+C014,Remote network unreachable,Static route should use R2 as next hop,ip route 10.20.0.0 255.255.255.0 192.168.1.99,Wrong next hop,Layer 3,Static Routing,High
+C015,Router cannot reach Internet,Default path should point to ISP,show ip route: no Gateway of last resort,Default route missing,Layer 3,Default Route,High
+C016,OSPF does not advertise network,10.10.2.0/24 should be in OSPF,show ip protocols: 10.10.2.0/24 not listed,OSPF network not advertised,Layer 3,OSPF,High
+C017,OSPF neighbor not forming,Both routers should use area 0,R2 interface configured for area 1,OSPF area mismatch,Layer 3,OSPF,High
+C018,Website works by IP but not name,DNS should be reachable,ipconfig: DNS Server 192.168.50.50; server unavailable,Wrong/unreachable DNS server,Layer 7,DNS,Medium
+C019,Internal hostname fails,server.lab should map to 192.168.20.10,DNS lookup: server.lab NXDOMAIN,DNS record missing,Layer 7,DNS,Medium
+C020,No domains resolve,DNS server should be 192.168.20.5,show running-config: ip name-server 192.168.99.99,Wrong DNS server configured,Layer 7,DNS,Medium
+C021,VLAN 30 cannot reach VLAN 20,Routing exists,show access-lists: deny ip 192.168.30.0 0.0.0.255 192.168.20.0 0.0.0.255,ACL blocks VLAN 30,Layer 3/4,ACL,High
+C022,Only one server is blocked,ACL should allow client subnet to server,ACL denies 192.168.10.0/24 to 192.168.20.10,Incorrect ACL entry,Layer 3/4,ACL,High
+C023,ACL looks correct but traffic blocked,ACL intended outbound on G0/1,ip access-group 101 in on G0/1,ACL applied wrong direction,Layer 3/4,ACL,High
+C024,All traffic denied after ACL change,Required traffic needs explicit permit,show access-lists: permit rules absent,Implicit deny blocks traffic,Layer 3/4,ACL,High
+C025,Inside hosts cannot access Internet,PAT should be configured,show ip nat statistics: translations 0,NAT overload missing,Layer 3,NAT,High
+C026,NAT translations not created,G0/0 inside and G0/1 outside,G0/0 is outside; G0/1 is inside,NAT inside/outside reversed,Layer 3,NAT,High
+C027,Only some hosts are translated,NAT ACL should match 192.168.10.0/24,ACL permits 192.168.20.0/24,NAT ACL matches wrong subnet,Layer 3,NAT,Medium
+C028,Guest Wi-Fi reaches internal hosts,Guest SSID should use VLAN 50,show vlan brief: Guest mapped to VLAN 10,Guest mapped to internal VLAN,Layer 2/3,Wireless,Critical
+C029,Wireless clients cannot authenticate,SSID and WPA2 key must match,AP key differs from client notes,Wireless credentials mismatch,Layer 2,Wireless,Medium
+C030,Guest Wi-Fi can reach internal server,Guest network should be isolated,show access-lists: no deny guest-to-internal,Guest isolation ACL missing,Layer 3/4,Wireless/ACL,Critical
